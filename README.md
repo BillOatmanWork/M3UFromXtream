@@ -6,4 +6,5 @@ Example: M3UFromXtream http://example.com:8080 user pass output.m3u
 ```
 
 # Good Karma
-This plugin is free.  If you find it of value and have the means, please consider making a donation to a local charity that benefits children.
+This application is free.  If you find it of value and have the means, please consider making a donation to a local charity that benefits children.
+
