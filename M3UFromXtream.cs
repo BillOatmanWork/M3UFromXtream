@@ -79,7 +79,6 @@ namespace M3UFromXtream
 
                     string streamUrl = $"{baseUrl}/{username}/{password}/{stream.StreamId}";
 
-                    // Write M3U entry
                     writer.WriteLine(
                         $"#EXTINF:-1 tvg-id=\"{(stream.EpgChannelId ?? "").Replace("\r", "").Replace("\n", "")}\" " +
                         $"tvg-name=\"{EscapeM3UField(stream.Name).Replace("\r", "").Replace("\n", "")}\" " +
@@ -159,7 +158,7 @@ namespace M3UFromXtream
         static string EscapeM3UField(string field)
         {
             if (string.IsNullOrEmpty(field))
-                return "";
+                return string.Empty;
 
             // Escape special characters in M3U fields
             return field.Replace("\"", "\\\"")

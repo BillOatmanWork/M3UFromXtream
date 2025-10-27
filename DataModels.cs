@@ -1,5 +1,5 @@
 /// <summary>
-/// Data Modeks for M3UFromXtream application.
+/// Data Models for M3UFromXtream application.
 /// </summary>
 /// 
 using System.Text.Json.Serialization;
