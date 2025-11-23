@@ -28,6 +28,8 @@ namespace M3UFromXtream
             string password = args[2];
             string outputFile = args.Length > 3 ? args[3] : "playlist.m3u";
 
+            httpClient.Timeout = TimeSpan.FromSeconds(10);
+
             try
             {
                 Console.WriteLine("Connecting to Xtream Code API...");
@@ -70,7 +72,29 @@ namespace M3UFromXtream
             {
                 Console.WriteLine($"Processing category: {category.CategoryName}");
 
-                var streams = await GetStreams(baseUrl, username, password, category.CategoryId).ConfigureAwait(false);
+                bool success = false;
+                int failCounter = 0;
+                List<Stream> streams = new List<Stream>();
+                while (!success && failCounter < 3)
+                {
+                    try
+                    {
+                        streams = await GetStreams(baseUrl, username, password, category.CategoryId).ConfigureAwait(false);
+                        success = true;
+                    }
+                    catch(Exception ex)
+                    {
+                        failCounter++;
+                        Console.WriteLine($"{failCounter} Error retrieving streams for category {category.CategoryName}: {ex.Message}");
+                        //  continue;
+                    }
+                }
+
+                if(success is false)
+                {
+                    Console.WriteLine($"Failed to retrieve streams for category {category.CategoryName} after 3 attempts. Aborting.");
+                    continue;
+                }
 
                 foreach (var stream in streams)
                 {
