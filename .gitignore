@@ -417,3 +417,5 @@ FodyWeavers.xsd
 *.msm
 *.msp
 /Build
+/.claude
+/J2-3u.m3u
