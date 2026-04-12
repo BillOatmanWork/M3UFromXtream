@@ -1,5 +1,4 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 
 namespace M3UFromXtream
@@ -7,6 +6,11 @@ namespace M3UFromXtream
     internal class M3UFromXtream
     {
         private static readonly HttpClient httpClient = new HttpClient();
+
+        static M3UFromXtream()
+        {
+            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
+        }
         private static string? version = string.Empty;
 
         static async Task Main(string[] args)
@@ -135,13 +139,16 @@ namespace M3UFromXtream
         {
             string url = $"{baseUrl}/player_api.php?username={username}&password={password}&action=get_live_categories";
 
-            string response = await httpClient.GetStringAsync(url).ConfigureAwait(false);
+            using var httpResponse = await httpClient.GetAsync(url).ConfigureAwait(false);
+            string response = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+            if (!httpResponse.IsSuccessStatusCode)
+                throw new HttpRequestException($"Server returned {(int)httpResponse.StatusCode}: {response}");
             //using (StreamWriter file = File.CreateText(@"C:\testdata\XcCategpries.json"))
             //{
             //    file.Write(JsonPrettify(response));
             //}
 
-            var categories = JsonSerializer.Deserialize<List<Category>>(response);
+            var categories = JsonConvert.DeserializeObject<List<Category>>(response);
 
             return categories ?? new List<Category>();
         }
@@ -160,14 +167,17 @@ namespace M3UFromXtream
         {
             string url = $"{baseUrl}/player_api.php?username={username}&password={password}&action=get_live_streams&category_id={categoryId}";
 
-            var response = await httpClient.GetStringAsync(url).ConfigureAwait(false);
+            using var httpResponse = await httpClient.GetAsync(url).ConfigureAwait(false);
+            var response = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+            if (!httpResponse.IsSuccessStatusCode)
+                throw new HttpRequestException($"Server returned {(int)httpResponse.StatusCode}: {response}");
 
             //using (StreamWriter file = File.CreateText(@$"C:\testdata\XcStreams_{categoryId}.json"))
             //{
             //    file.Write(JsonPrettify(response));
             //}
 
-            var streams = JsonSerializer.Deserialize<List<Stream>>(response);
+            var streams = JsonConvert.DeserializeObject<List<Stream>>(response);
 
             return streams ?? new List<Stream>();
         }
@@ -197,11 +207,8 @@ namespace M3UFromXtream
         /// <returns>Formatted JSON string</returns>
         public static string JsonPrettify(string json)
         {
-            using var doc = JsonDocument.Parse(json);
-            return JsonSerializer.Serialize(doc.RootElement, new JsonSerializerOptions
-            {
-                WriteIndented = true
-            });
+            var obj = JsonConvert.DeserializeObject(json);
+            return JsonConvert.SerializeObject(obj, Formatting.Indented);
         }
     }
 }

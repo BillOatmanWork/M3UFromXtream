@@ -2,22 +2,22 @@
 /// Data Models for M3UFromXtream application.
 /// </summary>
 /// 
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace M3UFromXtream
 {
     /// <summary>
-    /// Represents a category with an identifier, name, and optional parent category.   
+    /// Represents a category with an identifier, name, and optional parent category.
     /// </summary>
     public class Category
     {
-        [JsonPropertyName("category_id")]
+        [JsonProperty("category_id")]
         public string CategoryId { get; set; } = "";
 
-        [JsonPropertyName("category_name")]
+        [JsonProperty("category_name")]
         public string CategoryName { get; set; } = "";
 
-        [JsonPropertyName("parent_id")]
+        [JsonProperty("parent_id")]
         public int ParentId { get; set; } = 0;
     }
 
@@ -28,25 +28,25 @@ namespace M3UFromXtream
     /// type, identifier, and associated category.</remarks>
     public class Stream
     {
-        [JsonPropertyName("num")]
+        [JsonProperty("num")]
         public int Num { get; set; } = 0;
 
-        [JsonPropertyName("name")]
+        [JsonProperty("name")]
         public string Name { get; set; } = "";
 
-        [JsonPropertyName("stream_type")]
+        [JsonProperty("stream_type")]
         public string StreamType { get; set; } = "";
 
-        [JsonPropertyName("stream_id")]
+        [JsonProperty("stream_id")]
         public int StreamId { get; set; } = 0;
 
-        [JsonPropertyName("stream_icon")]
+        [JsonProperty("stream_icon")]
         public string StreamIcon { get; set; } = "";
 
-        [JsonPropertyName("epg_channel_id")]
+        [JsonProperty("epg_channel_id")]
         public string EpgChannelId { get; set; } = "";
 
-        [JsonPropertyName("category_id")]
+        [JsonProperty("category_id")]
         public string CategoryId { get; set; } = "";
     }
 }
